@@ -1,34 +1,86 @@
 <!DOCTYPE html>
 <html lang="ko_KR">
 <head>
-    <title>External Captive Portal Login</title>
     <meta charset="utf-8">
+    <title>Captive Portal Login</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        let fgtcont, magic, ssid;
 
-    <script type="text/x-javascript">
-    const uri = window.location.search;
-    const param = new URLSearchParams(uri);
-    const fgtcont = param.get('post');
-    const magic = param.get('magic');
-    const ssid = param.get('ssid');							// In the sample code, ssid is not required for authentication processing, so it can be deleted.
+        window.onload = function () {
+            const uri = window.location.search;
+            const param = new URLSearchParams(uri);
+            fgtcont = param.get('post');
+            magic = param.get('magic');
+            ssid = param.get('ssid');
+            const error = param.get('error');
 
-    function fgtSubmit(){
-        document.getElementById("login").action = fgtcont;
-        document.getElementById("magic").value = magic;
-        document.getElementById("ssid").value = ssid;
-    }
+            // Show error message if login failed
+            if (error === '1') {
+                document.getElementById("errorMessage").style.display = "block";
+            }
+
+            // If auto login is enabled, check the checkbox and pre-fill username
+            const autoLoginEnabled = localStorage.getItem('autoLogin') === 'true';
+            if (autoLoginEnabled) {
+                document.getElementById("remember").checked = true;
+                const savedUsername = localStorage.getItem('savedUsername');
+                if (savedUsername) {
+                    document.getElementById("username").value = savedUsername;
+                }
+            }
+        }
+
+        function fgtSubmit() {
+            const username = document.getElementById("username").value;
+            const remember = document.getElementById("remember").checked;
+
+            // Save username and checkbox state if auto login is enabled
+            if (remember) {
+                localStorage.setItem('savedUsername', username);
+                localStorage.setItem('autoLogin', 'true');
+            } else {
+                localStorage.removeItem('savedUsername');
+                localStorage.removeItem('autoLogin');
+            }
+
+            // Set required hidden fields before submitting the form
+            const form = document.getElementById("login");
+            form.action = fgtcont;
+            document.getElementById("magic").value = magic;
+            document.getElementById("ssid").value = ssid;
+
+            return true; // Submit the form
+        }
     </script>
 </head>
 
 <body>
-    <form class="wifi-free-form" id="login" name="LOGIN" method="post" action="">
+    <!-- Error message when login fails -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        Incorrect username or password.
+    </div>
 
+    <!-- Login form -->
+    <form id="login" method="post" action="" onsubmit="return fgtSubmit()">
         <input type="hidden" id="magic" name="magic" value="">
         <input type="hidden" id="ssid" name="ssid" value="">
-        <input type="text" name="username" size="10">
-        <input type="text" name="password" size="10">
-        
-        <button onclick="fgtSubmit()">WiFi Free Login</button>
+
+        ID : <input type="text" id="username" name="username" placeholder="Username" size="20"><br>
+        PASSWORD : <input type="password" id="password" name="password" placeholder="Password" size="20"><br>
+
+        <label>
+            <input type="checkbox" id="remember"> Remember username
+        </label><br><br>
+
+        <button type="submit">WiFi Free Login</button>
     </form>
 </body>
 </html>
