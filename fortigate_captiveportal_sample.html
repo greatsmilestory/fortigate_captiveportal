@@ -20,10 +20,10 @@
             fgtcont = param.get('post');
             magic = param.get('magic');
             ssid = param.get('ssid');
-            const error = param.get('error');
+            const authStatus = param.get('Auth');
 
             // Show error message if login failed
-            if (error === '1') {
+            if (authStatus === 'Failed') {
                 document.getElementById("errorMessage").style.display = "block";
             }
 
