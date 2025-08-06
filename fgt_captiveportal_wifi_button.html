@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <title>Captive Portal Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="robots" content="noindex, follow">
+    <script type="text/javascript">
+        const uri = window.location.search;
+        const param = new URLSearchParams(uri);
+        const fgtcont = param.get('post');
+        const magic = param.get('magic');
+        const ssid = param.get('ssid');
+
+        function fgtSubmit() {
+            const form = document.getElementById("Login");
+            form.action = "fortinet_wifi_submit.php?post=" + encodeURIComponent(fgtcont);
+            document.getElementById("magic").value = magic;
+            document.getElementById("ssid").value = ssid;
+            form.submit();
+        }
+    </script>
+</head>
+
+<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
+    <!-- Login form -->
+    <form id="Login" name="Login" method="post">
+        <input type="hidden" id="magic" name="magic" value="">
+        <input type="hidden" id="ssid" name="ssid" value="">
+        <button type="button" onclick="fgtSubmit()">WiFi Free Login</button>
+    </form>
+</body>
+</html>
