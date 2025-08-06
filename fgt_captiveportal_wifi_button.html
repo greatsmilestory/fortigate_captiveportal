@@ -17,7 +17,7 @@
 
         function fgtSubmit() {
             const form = document.getElementById("Login");
-            form.action = "fortinet_wifi_submit.php?post=" + encodeURIComponent(fgtcont);
+            form.action = "fgt_wifi_submit.php?post=" + encodeURIComponent(fgtcont);
             document.getElementById("magic").value = magic;
             document.getElementById("ssid").value = ssid;
             form.submit();
